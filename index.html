@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif Pancasila SD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            red: '#FF5964',
+                            yellow: '#FFD166',
+                            green: '#06D6A0',
+                            blue: '#118AB2',
+                            darkBlue: '#073B4C',
+                            purple: '#8338EC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+        }
+
+        .title-font {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .bounce-hover {
+            transition: all 0.2s ease;
+        }
+        .bounce-hover:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+        .bounce-hover:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 4px solid #ffffff;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Print Layout Rules */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .glass-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: white !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        .pulse-star {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-3 sm:p-6 text-slate-800">
+
+    <div class="fixed inset-0 overflow-hidden pointer-events-none no-print -z-10">
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-300 rounded-full blur-3xl opacity-50"></div>
+        <div class="absolute top-1/2 -right-10 w-60 h-60 bg-pink-300 rounded-full blur-3xl opacity-50"></div>
+        <div class="absolute -bottom-10 left-1/3 w-60 h-60 bg-sky-300 rounded-full blur-3xl opacity-50"></div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl w-full mx-auto my-auto">
+
+        <!-- ================= WELCOME SCREEN ================= -->
+        <div id="screen-welcome" class="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden transition-all duration-300">
+            <div class="inline-block bg-amber-100 text-amber-800 font-bold px-4 py-1.5 rounded-full text-sm mb-3 border-2 border-amber-300">
+                🇮🇩 Pendidikan Pancasila & Kewarganegaraan (PPKn)
+            </div>
+            
+            <h1 class="title-font text-3xl sm:text-5xl font-extrabold text-brand-darkBlue mb-3 leading-tight">
+                Kuis Interaktif <span class="text-brand-red">Pancasila</span> 🦅
+            </h1>
+            <p class="text-slate-600 font-medium text-base sm:text-lg mb-8">
+                Asah pengetahuanmu tentang simbol, bunyi, dan penerapan sila Pancasila!
+            </p>
+
+            <div class="max-w-md mx-auto space-y-4 bg-white/80 p-6 rounded-2xl border-2 border-sky-100 shadow-inner mb-8 text-left">
+                <div>
+                    <label for="student-name" class="block font-bold text-slate-700 mb-1">
+                        <i class="fa-solid fa-user-astronaut text-brand-blue mr-1"></i> Nama Lengkap Siswa:
+                    </label>
+                    <input type="text" id="student-name" placeholder="Masukkan namamu di sini..." 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none font-bold text-slate-800 bg-slate-50 transition">
+                </div>
+
+                <div>
+                    <label for="student-class" class="block font-bold text-slate-700 mb-1">
+                        <i class="fa-solid fa-school text-brand-green mr-1"></i> Kelas:
+                    </label>
+                    <select id="student-class" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none font-bold text-slate-800 bg-slate-50 transition">
+                        <option value="1 SD">Kelas 1 SD</option>
+                        <option value="2 SD" selected>Kelas 2 SD</option>
+                        <option value="3 SD">Kelas 3 SD</option>
+                        <option value="4 SD">Kelas 4 SD</option>
+                        <option value="5 SD">Kelas 5 SD</option>
+                        <option value="6 SD">Kelas 6 SD</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quiz Info Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-lg mx-auto mb-8 text-xs sm:text-sm font-semibold text-slate-600">
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-list-check text-brand-blue text-lg"></i>
+                    <span>10 Pilihan Ganda</span>
+                </div>
+                <div class="bg-green-50 border border-green-200 p-3 rounded-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-brand-green text-lg"></i>
+                    <span>10 Isian Singkat</span>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-center justify-center gap-2 col-span-2 sm:col-span-1">
+                    <i class="fa-solid fa-star text-brand-yellow text-lg"></i>
+                    <span>Total 20 Soal</span>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="bounce-hover w-full sm:w-auto px-10 py-4 bg-brand-red hover:bg-rose-600 text-white font-bold title-font text-xl rounded-2xl shadow-lg shadow-red-200 transition duration-200 flex items-center justify-center gap-3 mx-auto">
+                <i class="fa-solid fa-play"></i> Mulai Kuis Sekarang!
+            </button>
+        </div>
+
+
+        <!-- ================= QUIZ SCREEN ================= -->
+        <div id="screen-quiz" class="glass-card rounded-3xl p-5 sm:p-8 hidden relative">
+            
+            <!-- Top Progress Header -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span id="quiz-student-tag" class="font-bold text-slate-700 text-xs sm:text-sm bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                        <i class="fa-solid fa-user text-brand-blue"></i> Siswa
+                    </span>
+                    <span id="question-number" class="title-font text-base sm:text-lg font-bold text-brand-darkBlue">
+                        Soal 1 dari 20
+                    </span>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full h-4 bg-slate-200 rounded-full overflow-hidden p-0.5 border border-slate-300">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-brand-yellow via-brand-green to-brand-blue rounded-full transition-all duration-300" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="bg-white p-6 sm:p-8 rounded-2xl border-2 border-slate-100 shadow-sm mb-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span id="badge-question-type" class="px-3 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-700">
+                        Pilihan Ganda
+                    </span>
+                </div>
+                <h2 id="question-text" class="title-font text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-6">
+                    Memuat pertanyaan...
+                </h2>
+
+                <!-- Container Options (Pilihan Ganda) -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Container Isian Singkat -->
+                <div id="short-answer-container" class="hidden space-y-4">
+                    <div class="relative">
+                        <input type="text" id="short-answer-input" placeholder="Tuliskan jawaban singkatmu..." 
+                               class="w-full px-5 py-4 rounded-xl border-2 border-slate-300 focus:border-brand-blue focus:outline-none font-bold text-lg text-slate-800 bg-slate-50 transition">
+                    </div>
+                    <p class="text-xs text-slate-500 italic">
+                        <i class="fa-solid fa-circle-info text-amber-500"></i> Tips: Periksa kembali ejaan katamu sebelum menekan tombol lanjut!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Bar -->
+            <div class="flex justify-between items-center gap-3 pt-2">
+                <button id="btn-prev" onclick="prevQuestion()" class="bounce-hover px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-sm sm:text-base flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali
+                </button>
+                <button id="btn-next" onclick="nextQuestion()" class="bounce-hover px-8 py-3 bg-brand-green hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition text-sm sm:text-base flex items-center gap-2">
+                    Lanjut <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ================= RESULT SCREEN ================= -->
+        <div id="screen-result" class="glass-card rounded-3xl p-6 sm:p-10 hidden text-center">
+            
+            <!-- Confetti / Success Header -->
+            <div class="mb-6">
+                <div class="inline-block p-4 bg-amber-100 rounded-full mb-3 text-amber-500 pulse-star">
+                    <i class="fa-solid fa-trophy text-4xl sm:text-5xl"></i>
+                </div>
+                <h2 class="title-font text-2xl sm:text-4xl font-extrabold text-brand-darkBlue">
+                    Hasil Kuis Pembelajaran!
+                </h2>
+                <p class="text-slate-600 font-medium text-sm sm:text-base" id="result-student-info">
+                    Siswa: - | Kelas: -
+                </p>
+            </div>
+
+            <!-- Score Summary Card -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-5 rounded-2xl">
+                    <span class="block text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Skor Akhir</span>
+                    <span id="result-score" class="title-font text-4xl font-black text-brand-blue">0</span>
+                    <span class="text-slate-400 text-sm font-bold">/ 100</span>
+                </div>
+                <div class="bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200 p-5 rounded-2xl">
+                    <span class="block text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Predikat</span>
+                    <span id="result-badge" class="title-font text-2xl font-bold text-amber-600">Sangat Baik</span>
+                    <div id="result-stars" class="text-amber-400 text-sm mt-1">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-green-200 p-5 rounded-2xl">
+                    <span class="block text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Benar / Salah</span>
+                    <div class="title-font text-2xl font-bold">
+                        <span id="result-correct" class="text-brand-green">0</span> <span class="text-slate-400">/</span> <span id="result-wrong" class="text-brand-red">0</span>
+                    </div>
+                    <span class="text-slate-500 text-xs font-semibold">Total 20 Pertanyaan</span>
+                </div>
+            </div>
+
+            <!-- Detailed Answers & Review -->
+            <div class="text-left mb-8">
+                <h3 class="title-font text-lg sm:text-xl font-bold text-slate-800 mb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-magnifying-glass-chart text-brand-blue"></i> Pembahasan Jawaban</span>
+                    <span class="text-xs font-semibold text-slate-500">Kunci Jawaban Lengkap</span>
+                </h3>
+
+                <div id="review-container" class="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Dynamic review items -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap sm:flex-nowrap justify-center gap-3 no-print">
+                <button onclick="restartQuiz()" class="bounce-hover w-full sm:w-auto px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-sm sm:text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Coba Lagi
+                </button>
+                <button onclick="window.print()" class="bounce-hover w-full sm:w-auto px-6 py-3 bg-brand-blue hover:bg-blue-600 text-white font-bold rounded-xl shadow-md transition text-sm sm:text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak Hasil A4
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-xs text-slate-500 font-semibold py-4 mt-6 no-print">
+        <p>Media Pembelajaran Interaktif PPKn Kelas SD • Pancasila Dasar Negara 🇮🇩</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        
+        // Data Questions Database
+        const questionsData = [
+            // PILIHAN GANDA (1-10)
+            {
+                id: 1,
+                type: 'mc',
+                question: 'Jumlah sila dalam Pancasila ada ....',
+                options: ['3', '4', '5'],
+                correctIndex: 2,
+                explanation: 'Pancasila terdiri dari 5 dasar/sila utama.'
+            },
+            {
+                id: 2,
+                type: 'mc',
+                question: 'Bunyi sila pertama Pancasila adalah ....',
+                options: ['Ketuhanan Yang Maha Esa', 'Kemanusiaan yang adil dan beradab', 'Persatuan Indonesia'],
+                correctIndex: 0,
+                explanation: 'Sila pertama berbunyi "Ketuhanan Yang Maha Esa".'
+            },
+            {
+                id: 3,
+                type: 'mc',
+                question: 'Simbol sila pertama Pancasila adalah ....',
+                options: ['Rantai', 'Bintang', 'Pohon beringin'],
+                correctIndex: 1,
+                explanation: 'Sila pertama disimbolkan dengan Bintang Emas.'
+            },
+            {
+                id: 4,
+                type: 'mc',
+                question: 'Simbol sila kedua Pancasila adalah ....',
+                options: ['Kepala banteng', 'Rantai', 'Padi dan kapas'],
+                correctIndex: 1,
+                explanation: 'Sila kedua disimbolkan dengan Rantai emas.'
+            },
+            {
+                id: 5,
+                type: 'mc',
+                question: 'Simbol sila ketiga Pancasila adalah ....',
+                options: ['Bintang', 'Pohon beringin', 'Padi dan kapas'],
+                correctIndex: 1,
+                explanation: 'Sila ketiga disimbolkan dengan Pohon Beringin.'
+            },
+            {
+                id: 6,
+                type: 'mc',
+                question: 'Gambar kepala banteng merupakan simbol sila ke ....',
+                options: ['3', '4', '5'],
+                correctIndex: 1,
+                explanation: 'Kepala Banteng adalah simbol dari sila ke-4.'
+            },
+            {
+                id: 7,
+                type: 'mc',
+                question: 'Sila kelima Pancasila disimbolkan dengan gambar ....',
+                options: ['Bintang', 'Padi dan kapas', 'Rantai'],
+                correctIndex: 1,
+                explanation: 'Padi dan Kapas melambangkan sila ke-5 (Keadilan Sosial).'
+            },
+            {
+                id: 8,
+                type: 'mc',
+                question: 'Contoh penerapan sila pertama di rumah adalah ....',
+                options: ['Berdoa sebelum makan', 'Berbagi mainan dengan adik', 'Membantu ibu menyapu'],
+                correctIndex: 0,
+                explanation: 'Berdoa sebelum dan sesudah kegiatan adalah penerapan nilai Ketuhanan (Sila 1).'
+            },
+            {
+                id: 9,
+                type: 'mc',
+                question: 'Rudi bermain bersama teman yang berbeda agama. Sikap Rudi sesuai dengan sila ke ....',
+                options: ['1', '2', '3'],
+                correctIndex: 0,
+                explanation: 'Toleransi dan menghormati perbedaan agama adalah perwujudan Sila ke-1.'
+            },
+            {
+                id: 10,
+                type: 'mc',
+                question: 'Contoh penerapan sila kelima di sekolah adalah ....',
+                options: ['Berdoa sebelum belajar', 'Tidak memilih-milih teman dan berbagi bekal', 'Musyawarah memilih ketua kelas'],
+                correctIndex: 1,
+                explanation: 'Bersikap adil, tidak membeda-bedakan teman, dan berbagi adalah perwujudan Sila ke-5.'
+            },
+
+            // ISIAN SINGKAT (11-20)
+            {
+                id: 11,
+                type: 'sa',
+                question: 'Lambang negara Indonesia adalah Garuda ....',
+                keywords: ['pancasila'],
+                displayAnswer: 'Pancasila',
+                explanation: 'Lambang Negara Indonesia adalah Garuda Pancasila.'
+            },
+            {
+                id: 12,
+                type: 'sa',
+                question: 'Bunyi sila ketiga Pancasila adalah Persatuan ....',
+                keywords: ['indonesia'],
+                displayAnswer: 'Indonesia',
+                explanation: 'Sila ketiga berbunyi "Persatuan Indonesia".'
+            },
+            {
+                id: 13,
+                type: 'sa',
+                question: 'Sila keempat Pancasila berbunyi Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam ....',
+                keywords: ['permusyawaratan', 'perwakilan', 'permusyawaratan/perwakilan'],
+                displayAnswer: 'Permusyawaratan / Perwakilan',
+                explanation: 'Lanjutan bunyi sila ke-4 adalah "Permusyawaratan/Perwakilan".'
+            },
+            {
+                id: 14,
+                type: 'sa',
+                question: 'Simbol bintang berwarna kuning memiliki makna ....',
+                keywords: ['cahaya', 'kerohanian', 'ketuhanan', 'agama', 'tuhan'],
+                displayAnswer: 'Cahaya kerohanian / Ketuhanan / Agama',
+                explanation: 'Bintang emas melambangkan cahaya kerohanian dari Tuhan.'
+            },
+            {
+                id: 15,
+                type: 'sa',
+                question: 'Simbol rantai memiliki makna hubungan manusia yang ....',
+                keywords: ['saling berkaitan', 'berkaitan', 'bersatu', 'rukun', 'saling tolong', 'tolong menolong', 'erat'],
+                displayAnswer: 'Saling berkaitan / Bersatu / Rukun',
+                explanation: 'Mata rantai bersambung menandakan hubungan manusia yang saling berkaitan & bersatu.'
+            },
+            {
+                id: 16,
+                type: 'sa',
+                question: 'Pohon beringin melambangkan tempat untuk ....',
+                keywords: ['bertheduh', 'berteduh', 'berlindung', 'bersatu', 'teduh'],
+                displayAnswer: 'Berteduh / Berlindung / Bersatu',
+                explanation: 'Pohon beringin yang rindang melambangkan tempat berteduh dan perlindungan seluruh rakyat.'
+            },
+            {
+                id: 17,
+                type: 'sa',
+                question: 'Sila kedua mengajarkan kita untuk saling ... sesama teman.',
+                keywords: ['mencintai', 'menyanyangi', 'menyayangi', 'menghormati', 'menghargai', 'membantu', 'tolong'],
+                displayAnswer: 'Menghormati / Menyayangi / Mencintai / Membantu',
+                explanation: 'Sila ke-2 mengajarkan kasih sayang, saling menghormati, dan kemanusiaan.'
+            },
+            {
+                id: 18,
+                type: 'sa',
+                question: 'Jika ada teman yang jatuh, sikap yang baik sesuai sila kedua adalah ....',
+                keywords: ['membantu', 'menolong', 'membantunya', 'menolongnya', 'ditolong'],
+                displayAnswer: 'Membantu / Menolongnya',
+                explanation: 'Menolong teman yang membutuhkan adalah pengamalan Sila ke-2.'
+            },
+            {
+                id: 19,
+                type: 'sa',
+                question: 'Membersihkan kelas bersama-sama adalah contoh penerapan sila ke ....',
+                keywords: ['3', 'tiga', '5', 'lima'],
+                displayAnswer: 'Sila ke-3 (Persatuan/Gotong Royong) atau Sila ke-5 (Kerja Sama)',
+                explanation: 'Gotong royong dan bersatu membersihkan kelas mencerminkan Sila 3 maupun Sila 5.'
+            },
+            {
+                id: 20,
+                type: 'sa',
+                question: 'Berdoa sesuai agama masing-masing adalah contoh penerapan sila ke ....',
+                keywords: ['1', 'satu'],
+                displayAnswer: 'Sila ke-1',
+                explanation: 'Berdoa menurut kepercayaan agama adalah wujud Sila ke-1.'
+            }
+        ];
+
+        // State Variables
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questionsData.length).fill(null);
+        let studentData = { name: '', class: '' };
+
+        // Audio Effects (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15); // E5
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'finish') {
+                    // Arpeggio
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
+                        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.1 + 0.3);
+                        o.start(audioCtx.currentTime + idx * 0.1);
+                        o.stop(audioCtx.currentTime + idx * 0.1 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+
+        // Start Quiz
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            const classInput = document.getElementById('student-class').value;
+
+            if (!nameInput) {
+                alert('Tuliskan nama lengkapmu terlebih dahulu ya! 😊');
+                document.getElementById('student-name').focus();
+                return;
+            }
+
+            studentData.name = nameInput;
+            studentData.class = classInput;
+
+            document.getElementById('quiz-student-tag').innerHTML = `<i class="fa-solid fa-user text-brand-blue"></i> ${studentData.name} (${studentData.class})`;
+            
+            playSound('click');
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+
+            currentQuestionIndex = 0;
+            renderQuestion();
+        }
+
+        // Render Question
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            const total = questionsData.length;
+
+            // Update Progress Header
+            document.getElementById('question-number').innerText = `Soal ${currentQuestionIndex + 1} dari ${total}`;
+            const progressPercent = ((currentQuestionIndex + 1) / total) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Badge Type
+            const badgeType = document.getElementById('badge-question-type');
+            if (q.type === 'mc') {
+                badgeType.className = "px-3 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-700";
+                badgeType.innerText = "Bagian A: Pilihan Ganda";
+            } else {
+                badgeType.className = "px-3 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-800";
+                badgeType.innerText = "Bagian B: Isian Singkat";
+            }
+
+            // Question Text
+            document.getElementById('question-text').innerText = `${q.id}. ${q.question}`;
+
+            // Containers
+            const optionsContainer = document.getElementById('options-container');
+            const shortAnswerContainer = document.getElementById('short-answer-container');
+            const shortInput = document.getElementById('short-answer-input');
+
+            if (q.type === 'mc') {
+                optionsContainer.classList.remove('hidden');
+                shortAnswerContainer.classList.add('hidden');
+                optionsContainer.innerHTML = '';
+
+                const labels = ['A', 'B', 'C'];
+                q.options.forEach((opt, idx) => {
+                    const isSelected = userAnswers[currentQuestionIndex] === idx;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `w-full text-left p-4 rounded-xl font-semibold transition flex items-center gap-3 border-2 ${
+                        isSelected 
+                        ? 'bg-blue-50 border-brand-blue text-brand-darkBlue shadow-md scale-[1.01]' 
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
+                    }`;
+                    btn.onclick = () => selectOption(idx);
+                    btn.innerHTML = `
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
+                            isSelected ? 'bg-brand-blue text-white' : 'bg-slate-200 text-slate-600'
+                        }">${labels[idx]}</span>
+                        <span class="text-base sm:text-lg">${opt}</span>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+            } else {
+                optionsContainer.classList.add('hidden');
+                shortAnswerContainer.classList.remove('hidden');
+
+                // Fill value if previously saved
+                shortInput.value = userAnswers[currentQuestionIndex] !== null ? userAnswers[currentQuestionIndex] : '';
+                shortInput.oninput = (e) => {
+                    userAnswers[currentQuestionIndex] = e.target.value;
+                };
+            }
+
+            // Navigation Buttons State
+            document.getElementById('btn-prev').disabled = (currentQuestionIndex === 0);
+            const btnNext = document.getElementById('btn-next');
+            if (currentQuestionIndex === total - 1) {
+                btnNext.innerHTML = `Selesai & Lihat Hasil <i class="fa-solid fa-check-double"></i>`;
+                btnNext.className = "bounce-hover px-8 py-3 bg-brand-purple hover:bg-purple-700 text-white font-bold rounded-xl shadow-md transition text-sm sm:text-base flex items-center gap-2";
+            } else {
+                btnNext.innerHTML = `Lanjut <i class="fa-solid fa-arrow-right"></i>`;
+                btnNext.className = "bounce-hover px-8 py-3 bg-brand-green hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition text-sm sm:text-base flex items-center gap-2";
+            }
+        }
+
+        // Select MC Option
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            playSound('click');
+            renderQuestion();
+        }
+
+        // Navigation Actions
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                playSound('click');
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+
+        // Evaluate Quiz & Finish
+        function finishQuiz() {
+            let correctCount = 0;
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+
+                if (q.type === 'mc') {
+                    if (userAns === q.correctIndex) {
+                        correctCount++;
+                    }
+                } else if (q.type === 'sa') {
+                    if (userAns && typeof userAns === 'string') {
+                        const cleanUser = userAns.trim().toLowerCase();
+                        const isCorrect = q.keywords.some(kw => cleanUser.includes(kw));
+                        if (isCorrect) {
+                            correctCount++;
+                        }
+                    }
+                }
+            });
+
+            const total = questionsData.length;
+            const wrongCount = total - correctCount;
+            const score = Math.round((correctCount / total) * 100);
+
+            // Display Results
+            document.getElementById('result-student-info').innerText = `Nama: ${studentData.name} | Kelas: ${studentData.class}`;
+            document.getElementById('result-score').innerText = score;
+            document.getElementById('result-correct').innerText = correctCount;
+            document.getElementById('result-wrong').innerText = wrongCount;
+
+            // Badges & Stars
+            const badgeEl = document.getElementById('result-badge');
+            const starsEl = document.getElementById('result-stars');
+            
+            if (score >= 90) {
+                badgeEl.innerText = "Sangat Hebat! 🌟";
+                badgeEl.className = "title-font text-2xl font-bold text-amber-600";
+                starsEl.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>`;
+            } else if (score >= 70) {
+                badgeEl.innerText = "Bagus Sekali! 👍";
+                badgeEl.className = "title-font text-2xl font-bold text-emerald-600";
+                starsEl.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>`;
+            } else if (score >= 50) {
+                badgeEl.innerText = "Cukup Baik 😊";
+                badgeEl.className = "title-font text-2xl font-bold text-blue-600";
+                starsEl.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>`;
+            } else {
+                badgeEl.innerText = "Ayo Belajar Lagi! 💪";
+                badgeEl.className = "title-font text-2xl font-bold text-rose-600";
+                starsEl.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>`;
+            }
+
+            // Build Detailed Review
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                let isCorrect = false;
+                let userDisplayAns = '-';
+
+                if (q.type === 'mc') {
+                    if (userAns !== null) {
+                        userDisplayAns = q.options[userAns];
+                        if (userAns === q.correctIndex) isCorrect = true;
+                    }
+                } else {
+                    if (userAns && typeof userAns === 'string' && userAns.trim() !== '') {
+                        userDisplayAns = userAns.trim();
+                        const cleanUser = userDisplayAns.toLowerCase();
+                        if (q.keywords.some(kw => cleanUser.includes(kw))) {
+                            isCorrect = true;
+                        }
+                    }
+                }
+
+                const correctAnsText = q.type === 'mc' ? q.options[q.correctIndex] : q.displayAnswer;
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-xl border-2 text-sm ${
+                    isCorrect ? 'bg-green-50/70 border-green-200' : 'bg-red-50/70 border-red-200'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="mt-0.5">${isCorrect ? '<i class="fa-solid fa-circle-check text-green-600 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 text-lg"></i>'}</span>
+                        <div class="flex-1">
+                            <p class="font-bold text-slate-800">${q.id}. ${q.question}</p>
+                            <p class="mt-1 text-slate-600">Jawabanmu: <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-red-600'}">${userDisplayAns}</span></p>
+                            ${!isCorrect ? `<p class="text-slate-600">Kunci Jawaban: <span class="font-bold text-green-700">${correctAnsText}</span></p>` : ''}
+                            <p class="text-xs text-slate-500 mt-1 italic"><i class="fa-solid fa-lightbulb text-amber-500"></i> ${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                reviewContainer.appendChild(item);
+            });
+
+            // Switch Screen
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            // Trigger Victory Effects
+            playSound('finish');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Restart Quiz
+        function restartQuiz() {
+            userAnswers = new Array(questionsData.length).fill(null);
+            currentQuestionIndex = 0;
+            playSound('click');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
